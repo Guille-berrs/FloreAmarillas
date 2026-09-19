@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YELLOW FLOWERS - Para Ti</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+  <style>
+    /* Reset & Base viewport setup */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #01080e;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    /* Container for the entire artwork */
+    .scene-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      background: radial-gradient(ellipse at 50% 60%, #031c26 0%, #011019 45%, #00070c 85%, #000306 100%);
+      overflow: hidden;
+    }
+
+    /* Interactive / ambient canvas for fireflies and stars */
+    #stars-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Title "PARA TI ❤️ 🤗" */
+    .title-banner {
+      position: absolute;
+      top: 9%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .title-text {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 900;
+      letter-spacing: 0.45em;
+      color: #fffb8f;
+      text-shadow: 
+        0 0 10px #ffe743,
+        0 0 25px rgba(255, 230, 0, 0.75),
+        0 0 45px rgba(255, 204, 0, 0.4);
+      animation: pulseTitle 3.5s ease-in-out infinite alternate;
+    }
+
+    .title-emojis {
+      font-size: clamp(1.6rem, 3.6vw, 2.7rem);
+      display: inline-flex;
+      gap: 12px;
+      filter: drop-shadow(0 0 15px rgba(255, 60, 60, 0.6));
+      animation: floatEmoji 3s ease-in-out infinite alternate;
+    }
+
+    /* SVG Artwork Container - scales smoothly */
+    .flowers-svg-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 780px;
+      height: 86vh;
+      max-height: 980px;
+      z-index: 5;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      transform-origin: bottom center;
+    }
+
+    svg.botanical-art {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Ambient glow behind blossoms */
+    .halo-glow {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(246, 224, 94, 0.35) 0%, rgba(20, 200, 180, 0.2) 40%, rgba(0, 0, 0, 0) 70%);
+      filter: blur(28px);
+      z-index: 2;
+      pointer-events: none;
+      top: 36%;
+      animation: breatheGlow 4.5s ease-in-out infinite alternate;
+    }
+
+    /* Dynamic sway animations for botanical groups */
+    .sway-center {
+      transform-origin: 400px 780px;
+      animation: swayMiddle 6s ease-in-out infinite alternate;
+    }
+
+    .sway-left {
+      transform-origin: 380px 760px;
+      animation: swayLeftBranch 5.2s ease-in-out infinite alternate;
+    }
+
+    .sway-right {
+      transform-origin: 420px 760px;
+      animation: swayRightBranch 5.8s ease-in-out infinite alternate;
+    }
+
+    .flower-head-center {
+      transform-origin: 400px 300px;
+      animation: nodHead 4s ease-in-out infinite alternate;
+    }
+
+    .flower-head-left {
+      transform-origin: 260px 420px;
+      animation: nodLeft 4.6s ease-in-out infinite alternate;
+    }
+
+    .flower-head-right {
+      transform-origin: 540px 390px;
+      animation: nodRight 4.8s ease-in-out infinite alternate;
+    }
+
+    /* Side wild grass swaying */
+    .grass-left {
+      transform-origin: 60px 850px;
+      animation: swayGrassLeft 4s ease-in-out infinite alternate;
+    }
+
+    .grass-right {
+      transform-origin: 740px 850px;
+      animation: swayGrassRight 4.4s ease-in-out infinite alternate;
+    }
+
+    /* Subtle pulsing for blossom inner rim */
+    .pulse-core {
+      animation: coreGlow 2.5s ease-in-out infinite alternate;
+    }
+
+    /* Keyframe Definitions */
+    @keyframes pulseTitle {
+      0% {
+        opacity: 0.92;
+        text-shadow: 0 0 10px #ffe743, 0 0 20px rgba(255, 230, 0, 0.6);
+      }
+      100% {
+        opacity: 1;
+        text-shadow: 0 0 16px #fff48f, 0 0 35px rgba(255, 235, 80, 0.95), 0 0 50px rgba(0, 240, 200, 0.45);
+      }
+    }
+
+    @keyframes floatEmoji {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-4px) scale(1.05); }
+    }
+
+    @keyframes breatheGlow {
+      0% { opacity: 0.45; transform: scale(0.92); }
+      100% { opacity: 0.85; transform: scale(1.12); }
+    }
+
+    @keyframes swayMiddle {
+      0% { transform: rotate(-1.4deg); }
+      100% { transform: rotate(1.6deg); }
+    }
+
+    @keyframes swayLeftBranch {
+      0% { transform: rotate(-2.2deg); }
+      100% { transform: rotate(1.2deg); }
+    }
+
+    @keyframes swayRightBranch {
+      0% { transform: rotate(-1.2deg); }
+      100% { transform: rotate(2.4deg); }
+    }
+
+    @keyframes nodHead {
+      0% { transform: rotate(-2deg); }
+      100% { transform: rotate(2deg); }
+    }
+
+    @keyframes nodLeft {
+      0% { transform: rotate(-3deg); }
+      100% { transform: rotate(1.8deg); }
+    }
+
+    @keyframes nodRight {
+      0% { transform: rotate(-1.5deg); }
+      100% { transform: rotate(3deg); }
+    }
+
+    @keyframes swayGrassLeft {
+      0% { transform: rotate(-2.5deg); }
+      100% { transform: rotate(2deg); }
+    }
+
+    @keyframes swayGrassRight {
+      0% { transform: rotate(-2deg); }
+      100% { transform: rotate(2.8deg); }
+    }
+
+    @keyframes coreGlow {
+      0% { filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5)); }
+      100% { filter: drop-shadow(0 0 14px rgba(255, 240, 130, 0.95)); }
+    }
+
+    /* Sound/Interact Prompt Hint */
+    .interaction-hint {
+      position: absolute;
+      bottom: 12px;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: rgba(120, 210, 200, 0.45);
+      z-index: 25;
+      text-transform: uppercase;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scene-container" id="sceneContainer">
+    <!-- Starfield & Firefly Particle Canvas -->
+    <canvas id="stars-canvas"></canvas>
+
+    <!-- Warm Ambient Light Behind Flowers -->
+    <div class="halo-glow"></div>
+
+    <!-- Top Dedication Heading -->
+    <header class="title-banner">
+      <h1 class="title-text">PARA TI</h1>
+      <div class="title-emojis">
+        <span>❤️</span>
+        <span>🤗</span>
+      </div>
+    </header>
+
+    <!-- Botanical Vector Illustration (Scalable 800x1000 ViewBox) -->
+    <div class="flowers-svg-wrapper">
+      <svg class="botanical-art" viewBox="0 0 800 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- STEM GRADIENTS -->
+          <linearGradient id="stemGradMain" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#006978" />
+            <stop offset="50%" stop-color="#00bcd4" />
+            <stop offset="100%" stop-color="#004d40" />
+          </linearGradient>
+
+          <linearGradient id="stemGradLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00a896" />
+            <stop offset="50%" stop-color="#028090" />
+            <stop offset="100%" stop-color="#05668d" />
+          </linearGradient>
+
+          <!-- LEAF GRADIENTS (Smooth Emerald to Deep Teal) -->
+          <linearGradient id="leafGradBright" x1="20%" y1="0%" x2="90%" y2="100%">
+            <stop offset="0%" stop-color="#00e676" />
+            <stop offset="50%" stop-color="#00b0ff" />
+            <stop offset="100%" stop-color="#005b64" />
+          </linearGradient>
+
+          <linearGradient id="leafGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00897b" />
+            <stop offset="40%" stop-color="#006064" />
+            <stop offset="100%" stop-color="#00242c" />
+          </linearGradient>
+
+          <linearGradient id="leafGradMid" x1="10%" y1="10%" x2="100%" y2="90%">
+            <stop offset="0%" stop-color="#1de9b6" />
+            <stop offset="60%" stop-color="#00838f" />
+            <stop offset="100%" stop-color="#00363a" />
+          </linearGradient>
+
+          <!-- BASE MOUND DARK BUSHY LEAVES -->
+          <linearGradient id="bushLeaf1" x1="30%" y1="0%" x2="70%" y2="100%">
+            <stop offset="0%" stop-color="#0277bd" />
+            <stop offset="45%" stop-color="#004d40" />
+            <stop offset="100%" stop-color="#001a1e" />
+          </linearGradient>
+
+          <linearGradient id="bushLeaf2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00acc1" />
+            <stop offset="50%" stop-color="#005b66" />
+            <stop offset="100%" stop-color="#001214" />
+          </linearGradient>
+
+          <linearGradient id="bushLeafShaded" x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stop-color="#004d40" />
+            <stop offset="100%" stop-color="#011116" />
+          </linearGradient>
+
+          <!-- FLOWER PETAL GRADIENTS (Vivid Golden Yellow) -->
+          <linearGradient id="petalTopGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stop-color="#fff59d" />
+            <stop offset="35%" stop-color="#fdd835" />
+            <stop offset="85%" stop-color="#fbc02d" />
+            <stop offset="100%" stop-color="#f57f17" />
+          </linearGradient>
+
+          <linearGradient id="petalWingGrad" x1="20%" y1="0%" x2="80%" y2="100%">
+            <stop offset="0%" stop-color="#fff9c4" />
+            <stop offset="40%" stop-color="#fdd835" />
+            <stop offset="85%" stop-color="#f9a825" />
+            <stop offset="100%" stop-color="#e65100" />
+          </linearGradient>
+
+          <linearGradient id="flowerCupGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stop-color="#fbc02d" />
+            <stop offset="40%" stop-color="#e65100" />
+            <stop offset="100%" stop-color="#6d2b00" />
+          </linearGradient>
+
+          <!-- Cup Rim Glow / Center Core Highlight -->
+          <linearGradient id="cupRimGrad" x1="0%" y1="50%" x2="100%" y2="50%">
+            <stop offset="0%" stop-color="#fff9c4" stop-opacity="0.8" />
+            <stop offset="50%" stop-color="#ffffff" stop-opacity="1" />
+            <stop offset="100%" stop-color="#fff59d" stop-opacity="0.8" />
+          </linearGradient>
+
+          <!-- SIDE WILD GRASS GRADIENTS -->
+          <linearGradient id="grassGradLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00e676" />
+            <stop offset="40%" stop-color="#00796b" />
+            <stop offset="80%" stop-color="#004d40" />
+            <stop offset="100%" stop-color="#001814" />
+          </linearGradient>
+
+          <linearGradient id="grassGradRight" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#26a69a" />
+            <stop offset="50%" stop-color="#004d40" />
+            <stop offset="90%" stop-color="#001f1d" />
+            <stop offset="100%" stop-color="#000908" />
+          </linearGradient>
+        </defs>
+
+        <!-- ================= SIDE WILD TALL GRASS ================= -->
+        <g class="grass-left" id="ambientGrassLeft">
+          <!-- Far left tall blades -->
+          <path d="M10 880 C 15 750, 45 600, 60 520 C 50 630, 40 760, 45 920 Z" fill="url(#grassGradLeft)" />
+          <path d="M45 920 C 50 780, 80 640, 110 570 C 95 670, 80 800, 85 940 Z" fill="url(#grassGradLeft)" />
+          <path d="M85 940 C 90 820, 120 700, 160 620 C 140 720, 125 840, 120 950 Z" fill="url(#grassGradLeft)" opacity="0.85" />
+          <path d="M0 920 C 10 840, 20 740, 30 680 C 25 760, 15 850, 10 960 Z" fill="#003d33" />
+          <path d="M110 960 C 125 890, 140 820, 175 760 C 155 830, 140 900, 135 970 Z" fill="url(#grassGradLeft)" opacity="0.7" />
+          <path d="M50 970 C 70 940, 110 910, 145 920 C 120 945, 80 970, 50 985 Z" fill="#004d40" />
+        </g>
+
+        <g class="grass-right" id="ambientGrassRight">
+          <!-- Far right tall blades -->
+          <path d="M790 890 C 785 750, 750 590, 735 500 C 748 620, 760 760, 755 930 Z" fill="url(#grassGradRight)" />
+          <path d="M750 930 C 742 790, 710 650, 675 580 C 692 680, 712 810, 705 950 Z" fill="url(#grassGradRight)" />
+          <path d="M710 950 C 700 830, 670 710, 630 630 C 650 730, 665 850, 670 960 Z" fill="url(#grassGradRight)" opacity="0.85" />
+          <path d="M795 930 C 785 850, 775 750, 765 690 C 772 770, 782 860, 788 970 Z" fill="#00332c" />
+          <path d="M685 960 C 670 890, 650 820, 615 770 C 635 840, 652 910, 660 980 Z" fill="url(#grassGradRight)" opacity="0.75" />
+          <path d="M750 975 C 730 940, 680 915, 640 925 C 670 950, 715 975, 750 990 Z" fill="#003d33" />
+        </g>
+
+        <!-- ================= LEFT FLOWER BRANCH ================= -->
+        <g class="sway-left" id="leftBranch">
+          <!-- Curved Stem -->
+          <path d="M385 750 Q 320 620 260 450" stroke="url(#stemGradLeft)" stroke-width="13" stroke-linecap="round" fill="none" />
+
+          <!-- Left Stem Leaves -->
+          <!-- Lower leaf pair -->
+          <path d="M345 690 C 270 700, 240 760, 230 815 C 275 805, 330 765, 345 690 Z" fill="url(#leafGradDark)" />
+          <path d="M352 685 C 390 695, 430 740, 440 790 C 405 775, 365 740, 352 685 Z" fill="url(#leafGradBright)" opacity="0.7" />
+
+          <!-- Mid leaf pair -->
+          <path d="M315 615 C 240 610, 190 660, 185 710 C 235 695, 290 665, 315 615 Z" fill="url(#leafGradMid)" />
+          <path d="M318 600 C 370 590, 420 635, 435 680 C 395 670, 345 645, 318 600 Z" fill="url(#leafGradBright)" />
+
+          <!-- Upper mid leaf pair -->
+          <path d="M285 525 C 215 500, 175 540, 160 590 C 210 580, 260 560, 285 525 Z" fill="url(#leafGradBright)" />
+          <path d="M288 515 C 335 495, 385 530, 400 575 C 365 565, 320 550, 288 515 Z" fill="url(#leafGradDark)" />
+
+          <!-- Sub-calyx small leaf near flower head -->
+          <path d="M265 460 C 220 440, 205 460, 195 490 C 230 485, 255 480, 265 460 Z" fill="url(#leafGradMid)" />
+
+          <!-- FLOWER HEAD (LEFT) -->
+          <g class="flower-head-left">
+            <!-- Back/Side Petals -->
+            <!-- Left Wing -->
+            <path d="M255 450 C 220 450, 150 460, 135 440 C 130 425, 150 410, 195 415 C 230 420, 250 435, 255 450 Z" fill="url(#petalWingGrad)" />
+            <!-- Back Center Upright Petal -->
+            <path d="M255 445 C 220 405, 210 360, 240 345 C 270 335, 295 375, 275 440 Z" fill="url(#petalTopGrad)" />
+            <!-- Right Wing Petal -->
+            <path d="M265 445 C 300 420, 335 390, 365 400 C 380 415, 360 440, 315 455 C 285 462, 270 455, 265 445 Z" fill="url(#petalWingGrad)" />
+
+            <!-- Front Base Calyx / Nectar Cup (Glow Bowl) -->
+            <ellipse cx="255" cy="452" rx="42" ry="20" fill="url(#flowerCupGrad)" />
+            <!-- Glowing Inner Lip -->
+            <ellipse cx="255" cy="447" rx="38" ry="11" fill="url(#cupRimGrad)" class="pulse-core" />
+            <ellipse cx="255" cy="446" rx="28" ry="6" fill="#ffffff" opacity="0.8" />
+          </g>
+        </g>
+
+        <!-- ================= RIGHT FLOWER BRANCH ================= -->
+        <g class="sway-right" id="rightBranch">
+          <!-- Curved Stem -->
+          <path d="M415 750 Q 470 610 540 425" stroke="url(#stemGradLeft)" stroke-width="13" stroke-linecap="round" fill="none" />
+
+          <!-- Right Stem Leaves -->
+          <!-- Lower leaf pair -->
+          <path d="M450 670 C 420 710, 370 750, 335 770 C 370 730, 420 685, 450 670 Z" fill="url(#leafGradDark)" />
+          <path d="M460 660 C 530 670, 580 730, 595 780 C 550 765, 490 725, 460 660 Z" fill="url(#leafGradBright)" />
+
+          <!-- Mid leaf pair -->
+          <path d="M485 585 C 430 575, 390 620, 375 660 C 415 650, 460 625, 485 585 Z" fill="url(#leafGradBright)" opacity="0.85" />
+          <path d="M495 575 C 570 570, 620 620, 640 670 C 585 660, 530 630, 495 575 Z" fill="url(#leafGradMid)" />
+
+          <!-- Upper mid leaf pair -->
+          <path d="M515 500 C 475 470, 445 500, 425 540 C 465 530, 495 515, 515 500 Z" fill="url(#leafGradDark)" />
+          <path d="M525 490 C 585 470, 630 505, 650 545 C 605 540, 555 520, 525 490 Z" fill="url(#leafGradBright)" />
+
+          <!-- FLOWER HEAD (RIGHT) -->
+          <g class="flower-head-right">
+            <!-- Left Wing Petal -->
+            <path d="M535 425 C 495 405, 455 385, 435 400 C 420 415, 445 440, 490 450 C 515 455, 530 445, 535 425 Z" fill="url(#petalWingGrad)" />
+            <!-- Back Center Upright Petal -->
+            <path d="M540 415 C 535 365, 560 325, 590 335 C 615 350, 605 400, 565 425 Z" fill="url(#petalTopGrad)" />
+            <!-- Right Wing Petal -->
+            <path d="M550 425 C 590 420, 655 425, 675 445 C 675 465, 645 475, 595 460 C 565 450, 550 435, 550 425 Z" fill="url(#petalWingGrad)" />
+
+            <!-- Front Base Calyx / Cup -->
+            <ellipse cx="545" cy="432" rx="42" ry="20" fill="url(#flowerCupGrad)" />
+            <!-- Glowing Rim Lip -->
+            <ellipse cx="545" cy="427" rx="38" ry="11" fill="url(#cupRimGrad)" class="pulse-core" />
+            <ellipse cx="545" cy="426" rx="27" ry="6" fill="#ffffff" opacity="0.8" />
+          </g>
+        </g>
+
+        <!-- ================= MAIN CENTER TALL FLOWER ================= -->
+        <g class="sway-center" id="centerBranch">
+          <!-- Main Straight Vertical Stem -->
+          <path d="M400 750 L 400 335" stroke="url(#stemGradMain)" stroke-width="15" stroke-linecap="round" />
+
+          <!-- Leaves arranged along the central stem (symmetric pairs with natural offset) -->
+          <!-- Tier 1 (Lowest) -->
+          <path d="M394 670 C 330 660, 270 705, 250 760 C 310 750, 370 720, 394 670 Z" fill="url(#leafGradMid)" />
+          <path d="M406 660 C 470 650, 530 690, 555 745 C 500 740, 440 710, 406 660 Z" fill="url(#leafGradBright)" />
+
+          <!-- Tier 2 -->
+          <path d="M394 590 C 315 570, 260 620, 240 670 C 300 660, 365 630, 394 590 Z" fill="url(#leafGradBright)" />
+          <path d="M406 580 C 480 560, 540 605, 560 655 C 505 650, 445 625, 406 580 Z" fill="url(#leafGradDark)" />
+
+          <!-- Tier 3 -->
+          <path d="M394 510 C 320 485, 280 525, 260 575 C 315 570, 370 545, 394 510 Z" fill="url(#leafGradBright)" />
+          <path d="M406 500 C 475 475, 530 515, 545 565 C 495 560, 445 535, 406 500 Z" fill="url(#leafGradMid)" />
+
+          <!-- Tier 4 (Upper) -->
+          <path d="M394 430 C 335 410, 305 440, 290 480 C 335 480, 375 460, 394 430 Z" fill="url(#leafGradMid)" />
+          <path d="M406 425 C 465 405, 505 435, 515 475 C 475 475, 435 455, 406 425 Z" fill="url(#leafGradBright)" />
+
+          <!-- Tier 5 (Near bud) -->
+          <path d="M395 370 C 360 345, 335 365, 325 395 C 355 395, 385 385, 395 370 Z" fill="url(#leafGradBright)" />
+          <path d="M405 365 C 440 345, 465 365, 475 395 C 445 395, 415 385, 405 365 Z" fill="url(#leafGradBright)" />
+
+          <!-- MAIN FLOWER HEAD (CENTER) -->
+          <g class="flower-head-center">
+            <!-- Left Side Petal -->
+            <path d="M390 335 C 345 330, 275 345, 260 320 C 250 300, 285 270, 335 285 C 375 295, 390 320, 390 335 Z" fill="url(#petalWingGrad)" />
+            <!-- Back Center Upright Petal -->
+            <path d="M400 330 C 365 270, 360 215, 400 200 C 440 215, 435 270, 400 330 Z" fill="url(#petalTopGrad)" />
+            <!-- Right Side Petal -->
+            <path d="M410 335 C 455 330, 525 345, 540 320 C 550 300, 515 270, 465 285 C 425 295, 410 320, 410 335 Z" fill="url(#petalWingGrad)" />
+
+            <!-- Front Base Calyx Cup -->
+            <ellipse cx="400" cy="336" rx="52" ry="24" fill="url(#flowerCupGrad)" />
+            <!-- Center Glowing Inner Lip -->
+            <ellipse cx="400" cy="330" rx="46" ry="13" fill="url(#cupRimGrad)" class="pulse-core" />
+            <ellipse cx="400" cy="329" rx="34" ry="7" fill="#ffffff" opacity="0.85" />
+          </g>
+        </g>
+
+        <!-- ================= DENSE BUSHY BASE (GROUND FOLIAGE) ================= -->
+        <g id="groundBushGroup">
+          <!-- Back Dark Layer Leaves -->
+          <path d="M310 770 C 240 760, 170 820, 150 890 C 220 890, 290 850, 310 770 Z" fill="url(#bushLeafShaded)" />
+          <path d="M490 770 C 560 760, 630 820, 650 890 C 580 890, 510 850, 490 770 Z" fill="url(#bushLeafShaded)" />
+
+          <!-- Clustered Rosette Leaves - Mid Level -->
+          <path d="M360 780 C 280 770, 220 830, 200 900 C 270 905, 330 860, 360 780 Z" fill="url(#bushLeaf1)" />
+          <path d="M440 780 C 520 770, 580 830, 600 900 C 530 905, 470 860, 440 780 Z" fill="url(#bushLeaf2)" />
+
+          <!-- Dense Circular Overlapping Leaves (Left Fan) -->
+          <path d="M370 820 C 310 800, 250 830, 220 885 C 280 910, 340 885, 370 820 Z" fill="url(#leafGradDark)" />
+          <path d="M380 860 C 330 840, 270 870, 250 925 C 310 945, 360 920, 380 860 Z" fill="url(#bushLeaf1)" />
+          <path d="M390 900 C 340 890, 290 920, 280 970 C 330 985, 375 960, 390 900 Z" fill="url(#bushLeaf2)" />
+
+          <!-- Dense Circular Overlapping Leaves (Right Fan) -->
+          <path d="M430 820 C 490 800, 550 830, 580 885 C 520 910, 460 885, 430 820 Z" fill="url(#bushLeaf2)" />
+          <path d="M420 860 C 470 840, 530 870, 550 925 C 490 945, 440 920, 420 860 Z" fill="url(#leafGradDark)" />
+          <path d="M410 900 C 460 890, 510 920, 520 970 C 470 985, 425 960, 410 900 Z" fill="url(#bushLeaf1)" />
+
+          <!-- Center Front Clustered Crowns -->
+          <path d="M400 810 C 360 760, 330 790, 310 850 C 360 865, 395 850, 400 810 Z" fill="url(#leafGradMid)" />
+          <path d="M400 810 C 440 760, 470 790, 490 850 C 440 865, 405 850, 400 810 Z" fill="url(#leafGradBright)" />
+          
+          <!-- Lowermost Center Ground Fronds -->
+          <path d="M400 850 C 350 830, 330 890, 320 940 C 360 950, 395 910, 400 850 Z" fill="url(#leafGradMid)" />
+          <path d="M400 850 C 450 830, 470 890, 480 940 C 440 950, 405 910, 400 850 Z" fill="url(#leafGradBright)" />
+          
+          <!-- Bottom Lip Shadow/Base Floor -->
+          <path d="M220 970 C 320 920, 480 920, 580 970 C 500 1000, 300 1000, 220 970 Z" fill="#001217" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- Small footer prompt for sparkles -->
+    <div class="interaction-hint">Toca o mueve el cursor para esparcir magia ✨</div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const canvas = document.getElementById('stars-canvas');
+      const ctx = canvas.getContext('2d');
+
+      let width = (canvas.width = window.innerWidth);
+      let height = (canvas.height = window.innerHeight);
+
+      // Handle window resizing
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initStars();
+      });
+
+      // Background twinkling stars (small starry backdrop like reference)
+      const STARS_COUNT = 160;
+      const stars = [];
+
+      function initStars() {
+        stars.length = 0;
+        for (let i = 0; i < STARS_COUNT; i++) {
+          stars.push({
+            x: Math.random() * width,
+            y: Math.random() * (height * 0.75), // Concentrate on upper and mid sky
+            radius: Math.random() * 1.2 + 0.3,
+            baseAlpha: Math.random() * 0.7 + 0.2,
+            alpha: 0.5,
+            twinkleSpeed: Math.random() * 0.02 + 0.005,
+            phase: Math.random() * Math.PI * 2,
+            color: Math.random() > 0.4 ? '#ffffff' : (Math.random() > 0.5 ? '#80deea' : '#fff59d')
+          });
+        }
+      }
+
+      // Fireflies & Golden/Cyan Bioluminescent Pollen Particles
+      const FIREFLY_COUNT = 45;
+      const fireflies = [];
+
+      class Firefly {
+        constructor(isBurst = false, originX, originY) {
+          this.reset(isBurst, originX, originY);
+        }
+
+        reset(isBurst = false, originX, originY) {
+          if (isBurst && originX !== undefined) {
+            this.x = originX + (Math.random() - 0.5) * 30;
+            this.y = originY + (Math.random() - 0.5) * 30;
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 2.5 + 0.8;
+            this.vx = Math.cos(angle) * speed;
+            this.vy = Math.sin(angle) * speed - 0.8;
+            this.life = 1;
+            this.decay = Math.random() * 0.015 + 0.008;
+            this.radius = Math.random() * 3.2 + 1.2;
+          } else {
+            // Natural ambient spawning focused around blossoms
+            const blossomClusterX = width * 0.5 + (Math.random() - 0.5) * (width * 0.45);
+            const blossomClusterY = height * 0.45 + (Math.random() - 0.5) * (height * 0.35);
+
+            this.x = blossomClusterX;
+            this.y = blossomClusterY;
+            this.vx = (Math.random() - 0.5) * 0.7;
+            this.vy = -Math.random() * 0.6 - 0.2; // Slow upward float
+            this.life = Math.random() * 0.8 + 0.2;
+            this.decay = Math.random() * 0.004 + 0.002;
+            this.radius = Math.random() * 2.8 + 1.2;
+          }
+
+          // Golden-yellow or cyan glow colors matching the image
+          const palette = [
+            { r: 255, g: 235, b: 59, glow: 'rgba(255, 235, 59, ' },   // Gold
+            { r: 0,   g: 229, b: 255, glow: 'rgba(0, 229, 255, ' },   // Cyan
+            { r: 100, g: 255, b: 218, glow: 'rgba(100, 255, 218, ' }, // Mint/Aqua
+            { r: 255, g: 249, b: 196, glow: 'rgba(255, 249, 196, ' }  // Pale Warm Yellow
+          ];
+
+          this.theme = palette[Math.floor(Math.random() * palette.length)];
+          this.pulse = Math.random() * Math.PI;
+          this.pulseSpeed = Math.random() * 0.04 + 0.02;
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.pulse += this.pulseSpeed;
+
+          // Natural float oscillation
+          this.x += Math.sin(this.pulse) * 0.35;
+          this.life -= this.decay;
+
+          if (this.life <= 0 || this.y < -30 || this.x < -30 || this.x > width + 30) {
+            this.reset();
+          }
+        }
+
+        draw(ctx) {
+          const currentAlpha = Math.max(0, Math.sin(this.pulse) * 0.4 + 0.6) * this.life;
+          const currentRadius = this.radius * (0.8 + 0.3 * Math.sin(this.pulse));
+
+          // Outer Glow
+          const grad = ctx.createRadialGradient(
+            this.x, this.y, 0,
+            this.x, this.y, currentRadius * 3.8
+          );
+          grad.addColorStop(0, this.theme.glow + (currentAlpha * 0.8) + ')');
+          grad.addColorStop(0.4, this.theme.glow + (currentAlpha * 0.35) + ')');
+          grad.addColorStop(1, this.theme.glow + '0)');
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, currentRadius * 3.8, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Core Spark
+          ctx.fillStyle = `rgba(255, 255, 255, ${currentAlpha})`;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, currentRadius * 0.7, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Initialize ambient collection
+      initStars();
+      for (let i = 0; i < FIREFLY_COUNT; i++) {
+        fireflies.push(new Firefly());
+      }
+
+      // Interactive click / touch / mouse bursts
+      const burstParticles = [];
+
+      function spawnBurst(posX, posY, amount = 8) {
+        for (let i = 0; i < amount; i++) {
+          burstParticles.push(new Firefly(true, posX, posY));
+        }
+        if (burstParticles.length > 80) {
+          burstParticles.splice(0, burstParticles.length - 80);
+        }
+      }
+
+      window.addEventListener('pointerdown', (e) => {
+        spawnBurst(e.clientX, e.clientY, 12);
+      });
+
+      let lastMove = 0;
+      window.addEventListener('pointermove', (e) => {
+        const now = Date.now();
+        if (now - lastMove > 70) {
+          spawnBurst(e.clientX, e.clientY, 2);
+          lastMove = now;
+        }
+      });
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Render Background Stars
+        for (let i = 0; i < stars.length; i++) {
+          const s = stars[i];
+          s.phase += s.twinkleSpeed;
+          const a = s.baseAlpha + Math.sin(s.phase) * 0.35;
+          ctx.fillStyle = s.color;
+          ctx.globalAlpha = Math.max(0.1, Math.min(1, a));
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1.0;
+
+        // Render Ambient Fireflies
+        for (let i = 0; i < fireflies.length; i++) {
+          fireflies[i].update();
+          fireflies[i].draw(ctx);
+        }
+
+        // Render Interactive Burst Particles
+        for (let i = burstParticles.length - 1; i >= 0; i--) {
+        const p = burstParticles[i];
+        p.update();
+        p.draw(ctx);
+        if (p.life <= 0) {
+            burstParticles.splice(i, 1);
+        }
+        }
+
+        requestAnimationFrame(animate);
+     }
+
+      // Start animation loop cleanly
+      window.onload = function () {
+        animate();
+      };
+    })();
+  </script>
+</body>
+</html>
